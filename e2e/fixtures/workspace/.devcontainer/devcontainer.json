@@ -1,0 +1,4 @@
+{
+  "name": "lima-e2e",
+  "image": "mcr.microsoft.com/devcontainers/base:alpine"
+}

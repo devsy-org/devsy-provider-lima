@@ -5,8 +5,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
-    name: Run Integration Tests
+  integration:
+    name: Integration (no VM)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
@@ -22,16 +22,44 @@ jobs:
           version: "~> v2"
           args: release --snapshot --clean
 
-      # `provider add` runs the provider's init, which requires limactl on PATH.
+      # provider add runs the provider's init, which requires limactl on PATH.
       - name: install limactl
         run: |
           curl -fsSL https://github.com/lima-vm/lima/releases/download/v2.2.0/lima-2.2.0-Linux-x86_64.tar.gz \
             | sudo tar -C /usr/local -xzf -
           limactl --version
 
-      # The `integration` label covers the no-VM paths and runs on any runner.
-      # The `vm` label provisions a real Lima VM and needs host virtualization,
-      # so it is not run here; run it on a virtualization-capable runner.
       - name: integration tests
         working-directory: ./e2e
         run: go test -v -ginkgo.v -timeout 3600s --ginkgo.label-filter=integration
+
+  vm:
+    name: VM lifecycle
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+
+      - name: setup Go
+        uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6
+        with:
+          go-version-file: go.mod
+
+      - name: set up Lima
+        uses: lima-vm/lima-actions/setup@1be8c646a08d3a8c1186531108508cde33394b52 # v1
+        id: lima-setup
+
+      - name: cache ~/.cache/lima
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: ~/.cache/lima
+          key: lima-${{ steps.lima-setup.outputs.version }}
+
+      - name: install goreleaser
+        uses: goreleaser/goreleaser-action@5daf1e915a5f0af01ddbcd89a43b8061ff4f1a89 # v7
+        with:
+          version: "~> v2"
+          args: release --snapshot --clean
+
+      - name: vm lifecycle tests
+        working-directory: ./e2e
+        run: go test -v -ginkgo.v -timeout 3600s --ginkgo.label-filter=vm

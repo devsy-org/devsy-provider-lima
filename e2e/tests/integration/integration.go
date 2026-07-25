@@ -137,7 +137,7 @@ var _ = ginkgo.Describe(
 
 		ginkgo.It("should bring up a workspace on a Lima VM", func() {
 			mustRun(exec.Command("bin/devsy", "workspace", "up", "--ide=none",
-				"--id", workspaceID, "--provider", "lima", "../"))
+				"--id", workspaceID, "--provider", "lima", "fixtures/workspace"))
 		})
 
 		ginkgo.It("should run a command in the workspace", func() {
