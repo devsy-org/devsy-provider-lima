@@ -1,6 +1,4 @@
-// Command provider generates the provider.yaml manifest for a given version,
-// resolving binary download URLs and checksums from ./dist/checksums.txt.
-//
+// Command provider generates provider.yaml.
 // Usage: go run ./hack/provider/main.go <version> > ./dist/provider.yaml
 package main
 
@@ -225,21 +223,15 @@ func buildAgent() Agent {
 		Path:   "${AGENT_PATH}",
 		Driver: driverDocker,
 		Docker: DockerAgent{
-			// The container CLI name equals the runtime name for all three
-			// supported runtimes (docker|podman|nerdctl). devsy auto-detects the
-			// runtime from this binary's `--version` output, so we deliberately
-			// do NOT set docker.runtime: devsy's ResolveAgentConfig does not
-			// substitute ${OPTION} into the runtime field (only path/builder/
-			// install/env), so a literal "${LIMA_RUNTIME}" would reach the
-			// runtime parser and fail. Auto-detection from path avoids that.
+			// docker.runtime is deliberately unset: devsy does not substitute
+			// ${OPTION} into it, so it auto-detects from docker.path instead.
 			Path:    "${LIMA_RUNTIME}",
 			Install: "false",
 		},
 		InactivityTimeout:       "${INACTIVITY_TIMEOUT}",
 		InjectGitCredentials:    "${INJECT_GIT_CREDENTIALS}",
 		InjectDockerCredentials: "${INJECT_DOCKER_CREDENTIALS}",
-		// Halting the guest OS causes Lima to transition the VM to Stopped,
-		// which is how the inactivity timeout stops the machine.
+		// Halting the guest stops the Lima VM (how the inactivity timeout works).
 		Exec: map[string]string{"shutdown": "sudo shutdown -h now || shutdown -h now"},
 	}
 }
@@ -287,8 +279,7 @@ func buildDir(platform string) string {
 	return dirs[platform]
 }
 
-// allPlatforms lists host platforms the provider binary runs on. Lima is
-// unix-only, so windows is intentionally excluded.
+// allPlatforms is unix-only; Lima does not run on windows.
 func allPlatforms() []string {
 	return []string{"linux/amd64", "linux/arm64", "darwin/amd64", "darwin/arm64"}
 }

@@ -9,7 +9,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// NewStatusCmd prints the devsy status of the Lima VM to stdout.
 func NewStatusCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "status",

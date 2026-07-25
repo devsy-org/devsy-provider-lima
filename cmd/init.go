@@ -10,8 +10,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// NewInitCmd validates that the provider is usable: options parse and limactl
-// is installed and runnable.
 func NewInitCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "init",

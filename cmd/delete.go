@@ -6,7 +6,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// NewDeleteCmd deletes the Lima VM for a workspace machine.
 func NewDeleteCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "delete",

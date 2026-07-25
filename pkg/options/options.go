@@ -12,32 +12,20 @@ import (
 	"github.com/devsy-org/devsy-provider-lima/pkg/runtime"
 )
 
-// Options holds resolved provider configuration for a single invocation.
 type Options struct {
-	// MachineID is the devsy machine identifier; used as the Lima instance name.
-	MachineID string
-	// MachineFolder is the local devsy folder for this machine.
+	MachineID     string
 	MachineFolder string
-
-	// Runtime is the selected container runtime (docker|podman|nerdctl).
-	Runtime runtime.Runtime
-
-	LimactlPath string
-	// Template optionally overrides the Lima template locator. When empty, the
-	// template is derived from the selected runtime.
-	Template string
-
+	Runtime       runtime.Runtime
+	LimactlPath   string
+	// Template overrides the runtime-derived Lima template locator.
+	Template  string
 	CPUs      string
 	MemoryGiB string
 	DiskGiB   string
-	// VMType is the Lima VM type (vz|qemu). Empty auto-detects.
+	// VMType is the Lima VM type (vz|qemu); empty auto-detects.
 	VMType string
 }
 
-// FromEnv reads and validates options from the environment.
-//
-// requireMachineID controls whether MACHINE_ID must be present (true for
-// lifecycle verbs, which always operate on a specific instance).
 func FromEnv(requireMachineID bool) (*Options, error) {
 	rt, err := runtime.FromName(os.Getenv("LIMA_RUNTIME"))
 	if err != nil {
@@ -67,11 +55,8 @@ func FromEnv(requireMachineID bool) (*Options, error) {
 	return o, nil
 }
 
-// ResolveTemplate returns the locator to pass to `limactl create`. Precedence:
-//  1. an explicit user LIMA_TEMPLATE override (locator or file path);
-//  2. the runtime's embedded Lima config, written to writeDir and returned as a
-//     file path;
-//  3. the runtime's built-in template locator.
+// ResolveTemplate resolves the limactl template: explicit override, else the
+// runtime's embedded config written to disk, else its built-in locator.
 func (o *Options) ResolveTemplate(writeDir string) (string, error) {
 	if t := strings.TrimSpace(o.Template); t != "" {
 		return t, nil
@@ -88,8 +73,6 @@ func (o *Options) ResolveTemplate(writeDir string) (string, error) {
 	return o.Runtime.LimaTemplate(), nil
 }
 
-// writeConfig writes an embedded Lima config to a stable path so limactl can
-// read it. It prefers the machine folder, falling back to a temp dir.
 func (o *Options) writeConfig(writeDir string, cfg []byte) (string, error) {
 	dir := writeDir
 	if strings.TrimSpace(dir) == "" {
@@ -105,8 +88,6 @@ func (o *Options) writeConfig(writeDir string, cfg []byte) (string, error) {
 	return path, nil
 }
 
-// defaultVMType picks the fastest VM type for the host: vz on Apple Silicon
-// macOS, qemu elsewhere.
 func defaultVMType() string {
 	if goruntime.GOOS == "darwin" && goruntime.GOARCH == "arm64" {
 		return "vz"
