@@ -4,12 +4,11 @@ import (
 	"context"
 
 	"github.com/devsy-org/devsy-provider-lima/pkg/lima"
-	"github.com/devsy-org/devsy-provider-lima/pkg/log"
 	"github.com/devsy-org/devsy-provider-lima/pkg/options"
+	"github.com/devsy-org/devsy/pkg/log"
 	"github.com/spf13/cobra"
 )
 
-// NewCreateCmd creates and starts the Lima VM for a workspace machine.
 func NewCreateCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "create",

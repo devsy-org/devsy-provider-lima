@@ -6,7 +6,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// NewStopCmd stops a running Lima VM.
 func NewStopCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "stop",

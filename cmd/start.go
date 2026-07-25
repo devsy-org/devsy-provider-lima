@@ -6,7 +6,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// NewStartCmd starts a stopped Lima VM.
 func NewStartCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "start",

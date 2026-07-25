@@ -9,9 +9,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// NewCommandCmd runs a command inside the Lima VM. This is the exec channel
-// devsy uses to inject its agent and tunnel all further communication; stdio is
-// wired straight through.
 func NewCommandCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "command",

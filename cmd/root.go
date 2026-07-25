@@ -5,11 +5,10 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/devsy-org/devsy-provider-lima/pkg/log"
+	"github.com/devsy-org/devsy/pkg/log"
 	"github.com/spf13/cobra"
 )
 
-// NewRootCmd returns the provider's root command.
 func NewRootCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:           "devsy-provider-lima",
@@ -19,7 +18,14 @@ func NewRootCmd() *cobra.Command {
 	}
 }
 
-// BuildRoot assembles the root command with all provider verbs.
+func initLogger() {
+	cfg := log.Config{Verbosity: 1}
+	if os.Getenv("DEVSY_DEBUG") == "true" {
+		cfg.Debug = true
+	}
+	log.Init(cfg)
+}
+
 func BuildRoot() *cobra.Command {
 	rootCmd := NewRootCmd()
 	rootCmd.AddCommand(NewInitCmd())
@@ -32,9 +38,9 @@ func BuildRoot() *cobra.Command {
 	return rootCmd
 }
 
-// Execute runs the root command. It propagates the exit code of an inner
-// process (e.g. the command run inside the VM) so devsy sees it verbatim.
+// Execute propagates the inner process's exit code so devsy sees it verbatim.
 func Execute() {
+	initLogger()
 	if err := BuildRoot().Execute(); err != nil {
 		var exitErr *exec.ExitError
 		if errors.As(err, &exitErr) {
