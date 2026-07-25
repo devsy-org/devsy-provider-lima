@@ -99,7 +99,16 @@ var _ = ginkgo.Describe(
 		})
 
 		ginkgo.It("should install the provider with devsy", func() {
-			mustRun(exec.Command("bin/devsy", "provider", "add", "../dist/provider.yaml", "--name", "lima"))
+			mustRun(
+				exec.Command(
+					"bin/devsy",
+					"provider",
+					"add",
+					"../dist/provider.yaml",
+					"--name",
+					"lima",
+				),
+			)
 		})
 
 		ginkgo.It("should fail init when limactl is missing", func() {
