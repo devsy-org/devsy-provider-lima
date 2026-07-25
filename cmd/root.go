@@ -15,15 +15,15 @@ func NewRootCmd() *cobra.Command {
 		Short:         "Lima Provider commands",
 		SilenceErrors: true,
 		SilenceUsage:  true,
-		PersistentPreRunE: func(*cobra.Command, []string) error {
-			cfg := log.Config{Verbosity: 1}
-			if os.Getenv("DEVSY_DEBUG") == "true" {
-				cfg.Debug = true
-			}
-			log.Init(cfg)
-			return nil
-		},
 	}
+}
+
+func initLogger() {
+	cfg := log.Config{Verbosity: 1}
+	if os.Getenv("DEVSY_DEBUG") == "true" {
+		cfg.Debug = true
+	}
+	log.Init(cfg)
 }
 
 func BuildRoot() *cobra.Command {
@@ -40,6 +40,7 @@ func BuildRoot() *cobra.Command {
 
 // Execute propagates the inner process's exit code so devsy sees it verbatim.
 func Execute() {
+	initLogger()
 	if err := BuildRoot().Execute(); err != nil {
 		var exitErr *exec.ExitError
 		if errors.As(err, &exitErr) {

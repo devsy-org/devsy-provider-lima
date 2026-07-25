@@ -24,6 +24,14 @@ func providerBinary() string {
 	return filepath.Join("..", "dist", dir, bin)
 }
 
+// isolateDevsyHome points devsy at a throwaway home so tests never touch the
+// developer's real config and each run starts clean.
+func isolateDevsyHome() {
+	dir, err := os.MkdirTemp("", "devsy-lima-e2e-")
+	framework.ExpectNoError(err)
+	framework.ExpectNoError(os.Setenv("DEVSY_HOME", dir))
+}
+
 func setupProvider() {
 	cmd := exec.Command("go", "run", "hack/provider/main.go", "0.0.0")
 	cmd.Dir = "../"
@@ -64,6 +72,7 @@ var _ = ginkgo.Describe(
 	ginkgo.Ordered,
 	func() {
 		ginkgo.BeforeAll(func() {
+			isolateDevsyHome()
 			setupProvider()
 			setupDevsyCLI()
 		})
@@ -121,9 +130,9 @@ var _ = ginkgo.Describe(
 		const workspaceID = "devsy-provider-lima"
 
 		ginkgo.BeforeAll(func() {
+			isolateDevsyHome()
 			setupProvider()
 			setupDevsyCLI()
-			_ = exec.Command("bin/devsy", "provider", "delete", "lima").Run()
 			cmd := exec.Command("bin/devsy", "provider", "add", "../dist/provider.yaml",
 				"--name", "lima", "-o", "LIMA_CPUS=2", "-o", "LIMA_MEMORY=4", "-o", "LIMA_DISK=20")
 			framework.ExpectNoError(cmd.Run())
