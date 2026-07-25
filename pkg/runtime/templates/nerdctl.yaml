@@ -1,0 +1,45 @@
+# Ubuntu-based rootful containerd + nerdctl for the devsy lima provider.
+#
+# Deliberately not Lima's template://default, which runs ROOTLESS containerd
+# (socket at /run/user/<uid>/containerd/containerd.sock). devsy runs the runtime
+# via sudo and targets the system socket /run/containerd/containerd.sock, so we
+# provision a system containerd. nerdctl-full bundles containerd, runc, CNI and
+# buildkit and ships systemd units under /usr/local/lib/systemd/system.
+base:
+  - template://ubuntu-lts
+  - template://_default/mounts
+provision:
+  - mode: system
+    script: |
+      #!/bin/bash
+      # Install nerdctl-full (containerd, runc, CNI, buildkit) unless present.
+      set -eux -o pipefail
+      if ! command -v nerdctl >/dev/null 2>&1; then
+        export DEBIAN_FRONTEND=noninteractive
+        apt-get update
+        apt-get install -y curl uidmap
+        case "$(dpkg --print-architecture)" in
+          arm64) NARCH=arm64 ;;
+          *)     NARCH=amd64 ;;
+        esac
+        NERDCTL_VERSION=2.0.3
+        curl -fsSL -o /tmp/nerdctl-full.tgz \
+          "https://github.com/containerd/nerdctl/releases/download/v${NERDCTL_VERSION}/nerdctl-full-${NERDCTL_VERSION}-linux-${NARCH}.tar.gz"
+        tar -C /usr/local -xzf /tmp/nerdctl-full.tgz
+      fi
+      # Start SYSTEM containerd (devsy runs nerdctl via sudo against the system
+      # socket). enable --now can leave the freshly-extracted unit inactive, so
+      # reload, enable, restart, and block until the socket exists — failing the
+      # provision loudly if it does not, rather than hanging a later probe.
+      systemctl daemon-reload
+      systemctl enable containerd
+      systemctl restart containerd
+      systemctl enable --now buildkit || true
+      timeout 60s bash -c 'until test -S /run/containerd/containerd.sock; do sleep 2; done'
+probes:
+  - script: |
+      #!/bin/bash
+      set -eux -o pipefail
+      timeout 120s bash -c "until command -v nerdctl >/dev/null 2>&1; do sleep 3; done"
+      timeout 60s bash -c "until test -S /run/containerd/containerd.sock; do sleep 3; done"
+    hint: nerdctl or system containerd was not ready in the guest

@@ -1,0 +1,38 @@
+# Ubuntu-based rootful Podman for the devsy lima provider.
+#
+# Deliberately Ubuntu, not Lima's Fedora-based template://podman: devsy runs the
+# container runtime via sudo (rootful) and execs into the container as the
+# workspace user. On the Fedora template that in-container exec fails with
+# "/bin/bash: permission denied"; the Ubuntu base (same OS family as the proven
+# docker-rootful template) works. The system podman.socket is owned by the VM
+# user to mirror docker-rootful's user-owned /var/run/docker.sock.
+base:
+  - template://ubuntu-lts
+  - template://_default/mounts
+provision:
+  - mode: system
+    script: |
+      #!/bin/bash
+      set -eux -o pipefail
+      command -v podman >/dev/null 2>&1 && exit 0
+      export DEBIAN_FRONTEND=noninteractive
+      apt-get update
+      apt-get install -y podman
+  - mode: system
+    script: |
+      #!/bin/bash
+      set -eux -o pipefail
+      mkdir -p /etc/systemd/system/podman.socket.d
+      cat > /etc/systemd/system/podman.socket.d/override.conf <<-EOT
+      [Socket]
+      SocketUser={{.User}}
+      SocketMode=0660
+      EOT
+      systemctl daemon-reload
+      systemctl enable --now podman.socket
+probes:
+  - script: |
+      #!/bin/bash
+      set -eux -o pipefail
+      timeout 90s bash -c "until command -v podman >/dev/null 2>&1; do sleep 3; done"
+    hint: podman was not installed in the guest
