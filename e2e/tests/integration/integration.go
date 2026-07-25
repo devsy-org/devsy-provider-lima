@@ -142,6 +142,13 @@ var _ = ginkgo.Describe(
 			setupDevsyCLI()
 			mustRun(exec.Command("bin/devsy", "provider", "add", "../dist/provider.yaml",
 				"--name", "lima", "-o", "LIMA_CPUS=2", "-o", "LIMA_MEMORY=4", "-o", "LIMA_DISK=20"))
+
+			// Force cleanup even if a provisioning or assertion spec fails, so a
+			// broken run does not leave a Lima VM behind. The explicit delete
+			// spec below remains the behavioral assertion.
+			ginkgo.DeferCleanup(func() {
+				_ = exec.Command("bin/devsy", "workspace", "delete", "--force", workspaceID).Run()
+			})
 		})
 
 		ginkgo.It("should bring up a workspace on a Lima VM", func() {

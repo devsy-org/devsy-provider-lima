@@ -27,7 +27,7 @@ tasks:
     cmd: go test ./...
 
   test:e2e:
-    desc: Run no-VM e2e integration tests
+    desc: Run no-VM e2e integration tests (requires limactl on PATH; no VM)
     deps: ["build:cli"]
     dir: e2e
     cmd: go test -v -ginkgo.v -timeout 3600s --ginkgo.label-filter=integration
