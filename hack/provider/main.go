@@ -134,10 +134,9 @@ func newBuildConfig(version string) (*buildConfig, error) {
 
 func buildProvider(cfg *buildConfig) Provider {
 	return Provider{
-		Name:    providerName,
-		Version: cfg.version,
-		Description: "Devsy on Lima virtual machines. Each workspace runs in a " +
-			"dedicated Lima VM with a configurable container runtime.",
+		Name:         providerName,
+		Version:      cfg.version,
+		Description:  "Devsy on Lima VMs",
 		OptionGroups: buildOptionGroups(),
 		Options:      buildOptions(),
 		Agent:        buildAgent(),
