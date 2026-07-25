@@ -22,6 +22,13 @@ jobs:
           version: "~> v2"
           args: release --snapshot --clean
 
+      # `provider add` runs the provider's init, which requires limactl on PATH.
+      - name: install limactl
+        run: |
+          curl -fsSL https://github.com/lima-vm/lima/releases/download/v2.2.0/lima-2.2.0-Linux-x86_64.tar.gz \
+            | sudo tar -C /usr/local -xzf -
+          limactl --version
+
       # The `integration` label covers the no-VM paths and runs on any runner.
       # The `vm` label provisions a real Lima VM and needs host virtualization,
       # so it is not run here; run it on a virtualization-capable runner.

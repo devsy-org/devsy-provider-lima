@@ -24,6 +24,12 @@ func providerBinary() string {
 	return filepath.Join("..", "dist", dir, bin)
 }
 
+// mustRun runs cmd and fails the spec with the combined output on error.
+func mustRun(cmd *exec.Cmd) {
+	out, err := cmd.CombinedOutput()
+	gomega.Expect(err).NotTo(gomega.HaveOccurred(), string(out))
+}
+
 // isolateDevsyHome points devsy at a throwaway home so tests never touch the
 // developer's real config and each run starts clean.
 func isolateDevsyHome() {
@@ -93,15 +99,7 @@ var _ = ginkgo.Describe(
 		})
 
 		ginkgo.It("should install the provider with devsy", func() {
-			cmd := exec.Command(
-				"bin/devsy",
-				"provider",
-				"add",
-				"../dist/provider.yaml",
-				"--name",
-				"lima",
-			)
-			framework.ExpectNoError(cmd.Run())
+			mustRun(exec.Command("bin/devsy", "provider", "add", "../dist/provider.yaml", "--name", "lima"))
 		})
 
 		ginkgo.It("should fail init when limactl is missing", func() {
@@ -133,15 +131,13 @@ var _ = ginkgo.Describe(
 			isolateDevsyHome()
 			setupProvider()
 			setupDevsyCLI()
-			cmd := exec.Command("bin/devsy", "provider", "add", "../dist/provider.yaml",
-				"--name", "lima", "-o", "LIMA_CPUS=2", "-o", "LIMA_MEMORY=4", "-o", "LIMA_DISK=20")
-			framework.ExpectNoError(cmd.Run())
+			mustRun(exec.Command("bin/devsy", "provider", "add", "../dist/provider.yaml",
+				"--name", "lima", "-o", "LIMA_CPUS=2", "-o", "LIMA_MEMORY=4", "-o", "LIMA_DISK=20"))
 		})
 
 		ginkgo.It("should bring up a workspace on a Lima VM", func() {
-			cmd := exec.Command("bin/devsy", "workspace", "up", "--ide=none",
-				"--id", workspaceID, "--provider", "lima", "../")
-			framework.ExpectNoError(cmd.Run())
+			mustRun(exec.Command("bin/devsy", "workspace", "up", "--ide=none",
+				"--id", workspaceID, "--provider", "lima", "../"))
 		})
 
 		ginkgo.It("should run a command in the workspace", func() {
@@ -159,8 +155,7 @@ var _ = ginkgo.Describe(
 		})
 
 		ginkgo.It("should delete the workspace", func() {
-			cmd := exec.Command("bin/devsy", "workspace", "delete", "--force", workspaceID)
-			framework.ExpectNoError(cmd.Run())
+			mustRun(exec.Command("bin/devsy", "workspace", "delete", "--force", workspaceID))
 		})
 	},
 )
