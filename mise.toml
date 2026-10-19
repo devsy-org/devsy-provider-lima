@@ -25,19 +25,39 @@ description = "Install prek git hooks"
 run = "prek install"
 
 [tasks."build:cli"]
-description = "Build the cli"
+description = "Cross-compile the provider binaries into ./dist"
 run = "goreleaser release --snapshot --clean"
 
 [tasks."build:provider:dev"]
-description = "Build provider.yaml for local development"
+description = "Generate a provider.yaml pointing at local ./dist binaries"
 depends = ["build:cli"]
 env = { PROJECT_ROOT = "./dist" }
 run = "go run ./hack/provider/main.go v0.0.0 > ./dist/provider.yaml"
 
 [tasks."build:provider:release"]
-description = "Build provider.yaml for GitHub release"
+description = "Generate a provider.yaml pointing at GitHub release assets"
 env = { GITHUB_OWNER = "devsy-org" }
 run = '''
 VERSION="$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")"
 go run ./hack/provider/main.go "$VERSION" > ./dist/provider.yaml
 '''
+
+[tasks.test]
+description = "Run unit tests"
+run = "go test ./..."
+
+[tasks."test:e2e"]
+description = "Run no-VM e2e integration tests (requires limactl on PATH; no VM)"
+depends = ["build:cli"]
+dir = "e2e"
+run = "go test -v -ginkgo.v -timeout 3600s --ginkgo.label-filter=integration"
+
+[tasks."test:e2e:vm"]
+description = "Run full VM-lifecycle e2e tests (requires limactl + virtualization)"
+depends = ["build:cli"]
+dir = "e2e"
+run = "go test -v -ginkgo.v -timeout 3600s --ginkgo.label-filter=vm"
+
+[tasks.lint]
+description = "Run go vet"
+run = "go vet ./..."
