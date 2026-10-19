@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/devsy-org/devsy-provider-lima/compare/v1.1.0...v1.1.1) (2026-10-19)
+
+
+### Bug Fixes
+
+* update invalid devsy dependency ([#5](https://github.com/devsy-org/devsy-provider-lima/issues/5)) ([5ce6fcc](https://github.com/devsy-org/devsy-provider-lima/commit/5ce6fcc9dc3fa2bd92948ffb89a71e982498d2a3))
+
 ## [1.1.0](https://github.com/devsy-org/devsy-provider-lima/compare/v1.0.0...v1.1.0) (2026-07-25)
 
 
