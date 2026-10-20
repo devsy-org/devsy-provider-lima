@@ -76,9 +76,9 @@ rev = "v2.12.2"
 
 [[repos.hooks]]
 id = "golangci-lint"
-language_version = "1.26.9"
+language_version = "1.26.10"
 args = ["--timeout=10m"]
 
 [[repos.hooks]]
 id = "golangci-lint-fmt"
-language_version = "1.26.9"
+language_version = "1.26.10"
