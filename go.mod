@@ -1,6 +1,6 @@
 module github.com/devsy-org/devsy-provider-lima
 
-go 1.26.9
+go 1.26.10
 
 require (
 	github.com/devsy-org/devsy v1.24.0
