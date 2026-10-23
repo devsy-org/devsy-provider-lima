@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/devsy-org/devsy-provider-lima/compare/v1.1.1...v1.1.2) (2026-10-23)
+
+
+### Bug Fixes
+
+* **deps:** update module github.com/onsi/ginkgo/v2 to v2.33.1 ([#24](https://github.com/devsy-org/devsy-provider-lima/issues/24)) ([3a36552](https://github.com/devsy-org/devsy-provider-lima/commit/3a36552677afcb2c4a78937c22cab06477a24b99))
+
 ## [1.1.1](https://github.com/devsy-org/devsy-provider-lima/compare/v1.1.0...v1.1.1) (2026-10-19)
 
 
