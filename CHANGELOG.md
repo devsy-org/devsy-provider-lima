@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.3](https://github.com/devsy-org/devsy-provider-lima/compare/v1.1.2...v1.1.3) (2026-10-25)
+
+
+### Bug Fixes
+
+* **deps:** update module github.com/onsi/gomega to v1.44.0 ([#26](https://github.com/devsy-org/devsy-provider-lima/issues/26)) ([46106be](https://github.com/devsy-org/devsy-provider-lima/commit/46106be6b3796e72d1b6e6b35abbf0b0a78d8bb1))
+
 ## [1.1.2](https://github.com/devsy-org/devsy-provider-lima/compare/v1.1.1...v1.1.2) (2026-10-23)
 
 
