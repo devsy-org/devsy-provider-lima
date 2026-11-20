@@ -157,7 +157,7 @@ func parseInstanceStatus(listOutput, name string) (status string, found bool) {
 }
 
 func (c *Client) run(ctx context.Context, args ...string) error {
-	log.Debugf("running: %s %s", c.path, strings.Join(args, " "))
+	log.Debug("running limactl")
 	//nolint:gosec // fixed binary; internal args.
 	cmd := exec.CommandContext(ctx, c.path, args...)
 	cmd.Stdout = os.Stderr // keep limactl progress off command stdout

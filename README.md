@@ -80,6 +80,18 @@ devsy provider add devsy-org/devsy-provider-lima -o LIMA_CPUS=8 -o LIMA_MEMORY=1
 devsy provider set lima --option LIMA_RUNTIME=podman
 ```
 
+## Logging
+
+Provider log records are written to stderr as JSON by default. Set
+`DEVSY_LOG_LEVEL` to `error`, `warn`, `info`, `debug`, or `trace`. When the
+provider runs directly, the default level is `info`. Devsy supplies its effective
+level when it starts the provider.
+
+Set `DEVSY_LOG_FORMAT` to `json`, `text`, `plain`, or `logfmt` to choose the
+diagnostic format. An unset value or `auto` selects JSON. Invalid logging
+configuration stops the provider before it runs a command. Lima process output
+and command and status data retain their existing streams.
+
 ## SELinux hosts
 
 On SELinux-enforcing VM images (Fedora, RHEL, CentOS) the container runtime
