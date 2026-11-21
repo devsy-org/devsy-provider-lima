@@ -311,6 +311,8 @@ github.com/devsy-org/devsy v1.24.0 h1:2kGnX6BcPOISP7tT2wx6mJYwz4udqkS6GKvRTSF149
 github.com/devsy-org/devsy v1.24.0/go.mod h1:goBCUWaR/Zu412YUbgP1KCHkr1pSQMerWBgTtjSgwH4=
 github.com/devsy-org/devsy-runtime-sdk v1.6.0 h1:iEV4Y0Sc3LJNkTLadJSKcWcAf/oCXvC/AkHilrg/KyM=
 github.com/devsy-org/devsy-runtime-sdk v1.6.0/go.mod h1:MiBP/fiY83DAS0TueEiJZSHYZ1vq85UR4KJTMfHIM+E=
+github.com/devsy-org/devsy/logging v0.0.0-20261121002232-42213a6fbc3f h1:ZEosyV/3ln3ofOJLSbzwAbS4+m/1vstAabv/I2L+lyk=
+github.com/devsy-org/devsy/logging v0.0.0-20261121002232-42213a6fbc3f/go.mod h1:kpwoMhSdrhnJfTJ014ht04BLw0DS7FyF33RqIIe8CKs=
 github.com/devsy-org/ssh v1.2.9 h1:KHqX1xAplGFanm0FMSAojtiC9nV/UFxUeP/5jU5quak=
 github.com/devsy-org/ssh v1.2.9/go.mod h1:Uff10+cSSDZk3bG07u5D9+eQ8GMGqsgE70WCUJWcHv4=
 github.com/dgryski/go-metro v0.0.0-20180109044635-280f6062b5bc h1:8WFBn63wegobsYAX0YjD+8suexZDga5CctH4CCTx2+8=
